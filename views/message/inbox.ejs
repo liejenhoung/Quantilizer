@@ -1,0 +1,36 @@
+<div class="container">
+	<h3>Users</h3>
+	<table class='table'>
+		<tr>
+			<th>Read</th>
+			<th>Time</th>
+			<th>From</th>
+			<th>Title</th>
+			<th>Body</th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+		
+		<% _.each(messages.reverse(), function(message) { %>
+			<tr data-id="<%= message.id %>" data-model="message">
+				<% if (message.haveReaded) { %>
+					<td><img src="/images/icon-online.png"></td>
+				<% } else { %>
+					<td><img src="/images/icon-offline.png"></td>
+				<% } %>
+				<td><%= message.createdAt %></td>
+				<td><%= message.fromUsername %></td>
+				<td><%= message.title %></td>
+				<td><%= message.body.slice(0, 10) + "..." %></td>
+				<td><a href="/message/show/<%= message.id %>" class="btn btn-sm btn-primary">Show</a></td>
+				<td><a href="/message/new/<%= message.fromUser %>" class="btn btn-sm btn-warning">Reply</a></td>				
+				<td><form action="/message/destroy/<%= message.id %>" method="POST">
+					<input type="hidden" name="_method" value="delete"/>
+					<input type="submit" class="btn btn-sm btn-danger" value="delete"/>
+					<input type="hidden" name="_csrf" value="<%= _csrf %>" />
+				</form></td>
+			</tr>
+		<% }) %>
+	</table>
+</div>

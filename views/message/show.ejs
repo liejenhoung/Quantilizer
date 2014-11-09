@@ -1,0 +1,19 @@
+<div class='container'>
+	<h1>Title: <%= message.title %> </h1>
+	<hr>
+	<h5>From: <a href="/user/show/<%= message.fromUser %>"><%= message.fromUsername %></a></h5>
+	<hr>
+	<h5>Sent: <%= message.createdAt%></h5>
+	<hr>
+	<h5>Body: </h5>
+	<textarea class="form-control" rows=5><%= message.body %></textarea>
+	<hr>
+	<div class="row">
+		<div class="col-md-1"><a href="/message/new/<%= message.fromUser %>" class="btn btn-warning">Reply</a></div>				
+		<div class="col-md-1"><form action="/message/destroy/<%= message.id %>" method="POST">
+			<input type="hidden" name="_method" value="delete"/>
+			<input type="submit" class="btn btn-danger" value="delete"/>
+			<input type="hidden" name="_csrf" value="<%= _csrf %>" />
+		</form></div>
+	</div>
+</div>

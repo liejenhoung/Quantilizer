@@ -1,0 +1,19 @@
+<form action="/message/send" method="POST" class="form-signin" id="sign-up-form">
+	<h2 class="form-signin-heading">Message to <%= user.name %></h2>
+	
+	<input type="hidden" value="<%= session.User.id %>" name="fromUser">
+	<input type="hidden" value="<%= session.User.name %>" name="fromUsername">
+	<input type="hidden" value="<%= user.id %>" name="toUser">
+	
+	<div class="control-group">
+		<input type="text" class="form-control" placeholder="title" name="title">
+	</div>
+	
+	<div class="control-group">
+		<textarea class="form-control" rows="5" name="body" placeholder="Your message here..."></textarea>
+	</div>
+	<br />
+	
+	<input type="submit" class="btn btn-lg btn-primary btn-block" value="Send"/>
+	<input type="hidden" name="_csrf" value="<%= _csrf %>" />
+</form>
