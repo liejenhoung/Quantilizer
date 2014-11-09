@@ -35,12 +35,12 @@ $("#stocknum").change(function() {
 
 // Temporarily not usable
 $("#dayfrom").blur(function() {
-	$("#dayto").attr({"max": data.data[0][0], "min": $("dayfrom").val()});
+	$("#dayto").attr({"max": data[data.length - 1].Date, "min": $("dayfrom").val()});
 });
 
 // Temporarily not usable
 $("#dayto").blur(function() {
-	$("#dayfrom").attr({"max": $("dayto").val(), "min": data.data[data.data.length - 1][0]});
+	$("#dayfrom").attr({"max": $("dayto").val(), "min": data[0].Date});
 });
 
 // Change indicator code display
@@ -102,7 +102,7 @@ $("#run").click(function(){
 		try {
 			
 			// Calculate the user code
-			eval($("#code").text());
+			eval($("#code").val());
 			
 			// Initializer the result object
 			result[t] = {};

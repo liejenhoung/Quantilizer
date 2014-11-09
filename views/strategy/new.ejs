@@ -48,7 +48,7 @@ initial_capital = 100000;
 cost = 5 + 1000 * 0.05;
 
 buy = mov_avg(t, 30) < mov_avg(t, 50);
-sell = mov_avg(t, 30) > mov_avg(t, 15);
+sell = mov_avg(t, 30) > mov_avg(t, 50);
 
 num_of_shares = 1000/data[t].Close;
 
