@@ -56,6 +56,11 @@ module.exports.policies = {
   
   indicator: {
   	  'new': "userCanEditProfile"
+  },
+  
+  strategy: {
+  	  'new': "userCanSeeProfile",
+	  save: "userCanSeeProfile"
   }
 
 
