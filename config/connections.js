@@ -62,8 +62,8 @@ module.exports.connections = {
   // host: 'localhost',
   // port: 27017,
   // user: '',
-  //password: '',
-  //database: 'Quantilizer',
+  // password: '',
+  // database: 'Quantilizer',
   url: 'mongodb://admin:bearwing@dogen.mongohq.com:10056/quantilizer',
   schema: true
   },

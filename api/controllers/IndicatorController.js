@@ -12,17 +12,17 @@ module.exports = {
 	
 	create: function(req, res, next) {
 		var indicatorObj = {
-		    arthor: req.session.User.name,
-			name: req.param('indicatorname'),
-		    code: req.param('indicatorcode'),
-		    description: req.param('indicatordescription'),
+		    arthor: req.param('arthor'),
+			name: req.param('indicator_name'),
+		    code: req.param('indicator_code'),
+		    description: req.param('indicator_description'),
 		    onsale: false,
 		    price: 0
 		}
 
 		Indicator.create(indicatorObj).exec(function(err, indicator){
 		    if (err) return next(err);
-			res.redirect('/strategy/new');
+			res.redirect('/indicator/new');
 		});
 	},
 };
