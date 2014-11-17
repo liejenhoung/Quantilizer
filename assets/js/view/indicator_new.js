@@ -2,11 +2,16 @@
 
 var stock_data = [];
 var indicator_data = [];
+var worker = new Worker('/js/share/indicator_worker.js');
+
+worker.addEventListener('message', function(e) {
+	stock_data = e.data.stock_data;
+	indicator_data = e.data.indicator_data;
+	chart.series[0].setData(stock_data);
+	chart.series[1].setData(indicator_data);
+}, false);
 
 // Section 2 - Initialization
-
-// Generate Stock Data
-stock_data = generate_hcstock($("#stock_tick").val(),$("#stock_mu").val()/100,$("#stock_sigma").val()/100);
 
 // Generate Code Mirror
 var indicator_code = CodeMirror.fromTextArea($("#indicator_code").get(0), {
@@ -20,6 +25,9 @@ var plot_code = CodeMirror.fromTextArea($("#plot_code").get(0), {
 	mode: "javascript"
 });
 plot_code.setSize(500,50);
+
+// Generate Stock Data
+stock_data = generate_hcstock($("#stock_tick").val(),$("#stock_mu").val()/100,$("#stock_sigma").val()/100);
 
 // Create High Chart (Simulated Stock)
 var option = {
@@ -74,46 +82,22 @@ var chart = new Highcharts.StockChart(option);
 
 // Plot indicator
 $("#indicator_plot").click(function() {
-	var curr_date = new Date(); //today
-	curr_date.setDate(curr_date.getDate() - 400);
-	
-	var utc_date = 0;
-	var indicator_array = [];
-	var UDF = 0.00;
-	
-	var data = HighChart2Quandl(stock_data);
-	
-	eval(indicator_code.getValue());
-	
-	for(t=0;t<400;t++){
-		curr_date.setDate(curr_date.getDate() + 1);
-		utc_date = Date.UTC(curr_date.getFullYear(),curr_date.getMonth(),curr_date.getDate());
-		
-		UDF = eval(plot_code.getValue());
-		
-		indicator_array.push([utc_date, UDF]);
-	}
-		
-	indicator_data = indicator_array;	
-		
-	chart.series[1].setData(indicator_data);
+	worker.postMessage({"cmd": "plot", "data": stock_data, "indicator": indicator_code.getValue(), "plot": plot_code.getValue()});
 });
 
 // Remove indicator
 $("#indicator_remove").click(function() {
-	indicator_data = [];
-	chart.series[1].setData(indicator_data);
+	worker.postMessage({"cmd": "remove", "data": stock_data});
 });
 
 // Refresh Stock
 $("#stock_refresh").click(function() {
-	stock_data = generate_hcstock($("#stock_tick").val(),$("#stock_mu").val()/100,$("#stock_sigma").val()/100);
-	chart.series[0].setData(stock_data);
+	worker.postMessage({"cmd": "generate", "tick": $("#stock_tick").val(), "mu": $("#stock_mu").val()/100, "sigma": $("#stock_sigma").val()/100});
 });
 
 // Prevent Dropdown menu disappear
 $('.dropdown-menu').click(function(event){
-     event.stopPropagation();
+    event.stopPropagation();
 });
 
 // Click Save Indicator
