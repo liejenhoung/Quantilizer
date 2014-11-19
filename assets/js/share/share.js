@@ -1,3 +1,31 @@
+Number.prototype.mod = function(n) {
+	return ((this%n)+n)%n;
+}
+
+Date.prototype.addBusDays = function(dd) {
+	var wks = Math.floor(dd/5);
+	var dys = dd.mod(5);
+	var dy = this.getDay();
+	if (dy === 6 && dys > -1) {
+		if (dys === 0) {
+			dys-=2; dy+=2;
+		}
+		dys++;
+		dy -= 6;
+	}
+	if (dy === 0 && dys < 1) {
+		if (dys === 0) {
+			dys+=2;
+			dy-=2;
+		}
+		dys--;
+		dy += 6;
+	}
+	if (dy + dys > 5) dys += 2;
+	if (dy + dys < 1) dys -= 2;
+	this.setDate(this.getDate()+wks*7+dys);
+}
+
 function rnd_snd() {
 	return (Math.random()*2-1)+(Math.random()*2-1)+(Math.random()*2-1);
 }
@@ -30,26 +58,23 @@ function HighChart2Quandl (highchart) {
 }
 
 function generate_hcstock(input_tick, input_mu, input_sigma) {
-	var curr_date = new Date(); //today
-	curr_date.setDate(curr_date.getDate() - input_tick);
-	
+	// Define variables
 	var utc_Date = 0;
-	
 	var stock_open = 100.00;
 	var stock_high = 100.00;
 	var stock_low = 100.00;
 	var stock_close = 100.00;
-	
 	var temp1 = 0;
 	var temp2 = 0;
-	
 	var mu = daily_return(input_mu);
 	var sigma = daily_sigma(input_sigma);
-	
 	var stock_array = [];
 	
+	curr_date = new Date();
+	curr_date.addBusDays(-input_tick);
+	
 	for(t=0;t<input_tick;t++){
-		curr_date.setDate(curr_date.getDate() + 1);
+		curr_date.addBusDays(1);
 		utc_date = Date.UTC(curr_date.getFullYear(),curr_date.getMonth(),curr_date.getDate());
 
 		stock_open = stock_close;

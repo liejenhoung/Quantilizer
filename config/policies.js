@@ -55,7 +55,10 @@ module.exports.policies = {
   },
   
   indicator: {
-  	  'new': "userCanSeeProfile"
+  	  'new': "userCanSeeProfile",
+	  create: "userCanSeeProfile",
+	  show: "userCanSeeProfile",
+	  update: "userCanSeeProfile"
   },
   
   strategy: {

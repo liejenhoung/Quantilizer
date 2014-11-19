@@ -5,6 +5,8 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
+var moment = require('moment');
+
 module.exports = {
 	
 	'new': function(req, res) {
@@ -32,7 +34,6 @@ module.exports = {
 				req.session.flash = {
 					err: err
 				}
-				
 			
 			//If error redirect back to sign-up page
 				return res.redirect('/user/new');
@@ -51,7 +52,28 @@ module.exports = {
 				//Redirect to the show action
 				//From ep1-6: res.json(user);
 			
+				// Created indicators
+				Indicator.find({owner: "admin"}, function(err, indicators) {
+					_.each(indicators, function(indicator) {
+						var indicatorObj = {
+							name: indicator.name,
+						    code: indicator.code,
+							plotcode: indicator.plotcode,
+						    description: indicator.description,
+							author: indicator.author,
+							owner: req.session.User.name,
+							name_and_owner: indicator.name + "_" + req.session.User.name,
+							created: indicator.created,
+							edited: moment().format("YYYY-MM-DD"),
+							onsale: false,
+							price: 0
+						}
+						Indicator.create(indicatorObj, function(err, indicator) {
+							if (err) return next(err);
+						});
+					});
 				res.redirect('/user/show/'+user.id);	
+				});
 			});
 		});
 	},

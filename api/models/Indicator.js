@@ -7,12 +7,58 @@
 
 module.exports = {
 
-  attributes: {
-    name:'string',
-	arthor: 'string',
-    code:'string',
-	description:'string',
-    onsale:'boolean',
-    price:'integer'
-  }
+	attributes: {
+		name: {
+			type: 'string',
+			required: true
+		},
+	
+		author: {
+			type: 'string',
+			required: true
+		},
+	
+		owner: {
+			type: 'string',
+			required: true
+		},
+		
+		// Primary Key
+		name_and_owner: {
+			type: 'string',
+			required: true,
+			unique: true
+		},
+	
+		code: {
+			type: 'string',
+			required: true
+		},
+		
+		plotcode: {
+			type: 'string',
+			required: true
+		},
+	
+		description: {
+			type: 'string'
+		},
+	
+		onsale: {
+			type: 'boolean',
+			defaultsTo: false
+		},
+    
+		price: {
+			type: 'integer'
+		},
+		
+		created: {
+			type: 'string'
+		},
+		
+		edited: {
+			type: 'string'
+		}
+	}
 };

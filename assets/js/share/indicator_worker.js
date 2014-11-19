@@ -14,6 +14,7 @@ self.addEventListener('message', function(e) {
 		self.postMessage({"stock_data": input.data, "indicator_data": []});
 		break;
 	case "plot":
+		if (input.plot == "") {return; }
 		var result = [];
 		var data = HighChart2Quandl(input.data);
 		eval(input.indicator);

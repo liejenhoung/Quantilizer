@@ -26,4 +26,22 @@ $(document).ready(function(){
 			.text('OK!').addClass('valid')
 		}
 	});
+	
+	$('#indicator_submit').validate({
+		rules: {
+			name: {
+				required: true
+			},
+			code: {
+				required: true
+			},
+			description: {
+				required: true
+			}
+		},
+		success: function(element){
+			element
+			.text('OK!').addClass('valid')
+		}
+	});
 });

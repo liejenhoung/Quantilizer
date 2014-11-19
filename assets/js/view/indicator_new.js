@@ -120,8 +120,9 @@ $('#indicator_submit').submit(function(event){
  	// Get some values from elements on the page:
  	submitjson["indicator_name"] = $("#indicator_name").val();
  	submitjson["indicator_code"] = indicator_code.getValue();
+	submitjson["indicator_plotcode"] = plot_code.getValue();
 	submitjson["indicator_description"] = $("#indicator_description").val();
- 	submitjson["arthor"] = $("#arthor").val();
+ 	submitjson["author"] = $("#author").val();
  	submitjson["_csrf"] = $("#_csrf").val();
  	url = $('#indicator_submit').attr("action");
 
@@ -133,10 +134,12 @@ $('#indicator_submit').submit(function(event){
  		data: JSON.stringify(submitjson),
  		cache: false,
  		success: function(data){
- 			alert('Successfully saved strategy.');
+			window.location.replace("/indicator/show");
  		},
  		error: function(jqXHR, textStatus, err){
- 			alert('text status '+textStatus+', err '+err);
+			if (!$("#indicator_error_message").length) {
+				$("#indicator_error_container").append('<ul class="alert alert-success" id="indicator_error_message"><a href="#" class="close" data-dismiss="alert">&times;</a><li>'+jqXHR.responseText+'</li></ul>');
+			}				
  		} 
  	});
 	 
