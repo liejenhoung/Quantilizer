@@ -1,25 +1,27 @@
+<div class="loader"></div>
+
 <div class="container">
-	<form action="/indicator/create" id="indicator_submit" method="POST">
+	<form action="/indicator/create" id="indicator_new-form" method="POST">
 		<h1>Indicator Formation</h1>
 		<hr>
 		<div class="row">
 			<div class="col-md-6">
 				<h5>Indicator Code</h5>
-				<textarea name="indicator_code" id="indicator_code" class="form-control" rows=5><%= indicator.code %></textarea>
+				<textarea id="indicator_new-code" class="form-control" rows=5><%= indicator.code %></textarea>
 				<br>
 				<h5>Plot Code</h5>
-				<textarea name="plot_code" id="plot_code" class="form-control" rows=5><%= indicator.plotcode %></textarea>
+				<textarea name="plot_code" id="indicator_new-plotcode" class="form-control" rows=5><%= indicator.plotcode %></textarea>
 				<br>
-				<input type="button" id="indicator_plot", value="Plot">
-				<input type="button" id="indicator_remove", value="Remove">
-				<input type="button" id="stock_refresh" Value="Refresh">
-				<input type="button" id="stock_download" Value="Download">
+				<input type="button" id="indicator_new-plot", value="Plot">
+				<input type="button" id="indicator_new-remove", value="Remove">
+				<input type="button" id="indicator_new-refresh" Value="Refresh">
+				<input type="button" id="indicator_new-download" Value="Download">
 				<div class="btn-group" role="group">
 					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 						Configuration
 						<span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu">
+					<ul class="dropdown-menu" id="indicator_new-confg_dropdown" role="menu">
 						<li><input type="text" id="stock_tick" Value=400 size=5> Tick</li>
 						<li><input type="text" id="stock_mu" Value=2 size=5> mu</li>
 						<li><input type="text" id="stock_sigma" Value=10 size=5> sigma</li>
@@ -31,10 +33,10 @@
 			</div>
 		</div>
 		<hr>
-		<button type="button" id="indicator_create" class="btn btn-primary btn-lg btn-block">Create</button>
+		<button type="button" id="indicator_new-create" class="btn btn-primary btn-lg btn-block">Create</button>
 		
 		<!-- Modal -->
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="indicator_new-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -44,21 +46,25 @@
 						<h4 class="modal-title" id="myModalLabel">Create Indicator</h4>
 					</div>
 					<div class="modal-body">
-						<div id="indicator_error_container"></div>
+						<div id="indicator_new-errdiv"></div>
 						<h5>Indicator name</h5>
-						<input type="text" id="indicator_name" class="form-control" value="<%= indicator.name%>" placeholder="Enter indicator name..."/>
+						<input type="text" id="indicator_new-name" class="form-control" value="<%= indicator.name%>" placeholder="Enter indicator name..."/>
 						<hr>
 						<h5>Description</h5>
-						<textarea class="form-control" id="indicator_description" rows="10" placeholder="Enter indicator description..."><%= indicator.description%></textarea>
+						<textarea class="form-control" id="indicator_new-description" rows="10" placeholder="Enter indicator description..."><%= indicator.description%></textarea>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<input type="submit" id="indicator_save" class="btn btn-primary" value="Save Changes"></input>
+						<input type="submit" class="btn btn-primary" value="Save Changes"></input>
 					</div>
 				</div>
 			</div>
 		</div>
+		<!-- Modal END -->
+		
 		<input type="hidden" id="_csrf" name="_csrf" value="<%= _csrf %>" />
-		<input type="hidden" id="author" name="author" value="<%= session.User.name %>" />
+		<input type="hidden" id="indicator_new-author" name="author" value="<%= session.User.name %>" />
 	</form>
 </div>
+
+<%- block('localScripts', '<script src="/localjs/indicator_new.js"></script>') %>
