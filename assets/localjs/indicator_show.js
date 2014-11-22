@@ -1,25 +1,25 @@
 // Edit Indicator
-function indicator_edit(id) {
-	$('#indicator_name').val($('#indicator_edit_name_' + id).val()); 
-	$('#indicator_description').val($('#indicator_edit_description_' + id).val()); 
-	$('#indicator_id').val(id); 
-	$('#indicator_edit_Modal').modal('show');	
+function EditIndicator(id) {
+	$('#indicator_show-name').val($('#indicator_show-edit_name_' + id).val()); 
+	$('#indicator_show-description').val($('#indicator_show-edit_description_' + id).val()); 
+	$('#indicator_show-id').val(id); 
+	$('#indicator_show-Modal').modal('show');	
 }
 
 // Save Indicator
-$('#indicator_edit_submit').submit(function(event){
+$('#indicator_show-form').submit(function(event){
 	event.preventDefault();
 	
  	// Define post json
  	var submitjson = {
- 		indicator_id: $("#indicator_id").val(),
-		indicator_name: $("#indicator_name").val(),
-		indicator_description: $("#indicator_description").val(),
+ 		indicator_id: $("#indicator_show-id").val(),
+		indicator_name: $("#indicator_show-name").val(),
+		indicator_description: $("#indicator_show-description").val(),
 		_csrf: $("#_csrf").val()
  	};
 
  	// Get some values from elements on the page:
- 	url = $('#indicator_edit_submit').attr("action");
+ 	url = $('#indicator_show-form').attr("action");
 
  	$.ajax({
  		url: url,
@@ -32,8 +32,8 @@ $('#indicator_edit_submit').submit(function(event){
 			window.location.replace("/indicator/show");
  		},
  		error: function(jqXHR, textStatus, err){
-			if (!$("#indicator_error_message").length) {
-				$("#indicator_error_container").append('<ul class="alert alert-success" id="indicator_error_message"><a href="#" class="close" data-dismiss="alert">&times;</a><li>'+jqXHR.responseText+'</li></ul>');
+			if (!$("#indicator_show-errmsg").length) {
+				$("#indicator_show-errdiv").append('<ul class="alert alert-success" id="indicator_show-errmsg"><a href="#" class="close" data-dismiss="alert">&times;</a><li>'+jqXHR.responseText+'</li></ul>');
 			}				
  		} 
  	});	 

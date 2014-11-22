@@ -1,9 +1,17 @@
-<div class="loader"></div>
-
 <div class="container">
 	<form action="/indicator/create" id="indicator_new-form" method="POST">
-		<h1>Indicator Formation</h1>
+		<h2>Indicator Formation</h2>
 		<hr>
+		<ol class="breadcrumb">
+			<li><span class="label label-default">Library</span></li>
+			<li><input list="indicators" id="indicator_new-library"></li>
+			<datalist id="indicators">
+				<% _.each(indicators, function(indicator) { %>
+				<option value="<%= indicator.name %>" id="<%= indicator.id %>">
+				<% }); %>
+			</datalist>
+			<input type="button" value="load" id="indicator_new-load" />
+		</ol>
 		<div class="row">
 			<div class="col-md-6">
 				<h5>Indicator Code</h5>

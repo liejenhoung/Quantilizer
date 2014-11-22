@@ -9,19 +9,30 @@ var moment = require('moment');
 
 module.exports = {
 	'new': function(req, res, next) {
-		if (req.param('id') == undefined) {
-			res.view({indicator: {name: "", code: "", plotcode: "", description: ""}});
-		} else {
-			Indicator.findOne(req.param('id'), function(err, indicator) {
-				if (err) return next(err);
-				if (!indicator) {
-					return res.view({indicator: {name: "", code: "", plotcode: "", description: ""}});
-				};
+		Indicator.find({owner: req.session.User.name}, function(err, indicators) {
+			if (err) return next(err);
+			if (req.param('id') == undefined) {
 				res.view({
-					indicator: indicator
+					indicator: {name: "", code: "", plotcode: "", description: ""},
+					indicators: indicators
 				});
-			});	
-		}
+			} else {
+				Indicator.findOne(req.param('id'), function(err, indicator) {
+					if (err) return next(err);
+					if (!indicator) {
+						return res.view({
+							indicator: {name: "", code: "", plotcode: "", description: ""},
+							indicators: indicators
+						});
+					} else {
+						return res.view({
+						indicator: indicator,
+						indicators: indicators
+						});
+					}
+				});	
+			}
+		});
 	},
 	
 	show: function(req, res) {

@@ -22,10 +22,10 @@
 				<td><%= indicator.created %></td>
 				<td><%= indicator.edited %></td>
 				<td><%= indicator.description.slice(0,50) + "..." %></td>
-				<input type="hidden" id="indicator_edit_name_<%= indicator.id %>" value="<%= indicator.name %>"/>
-				<input type="hidden" id="indicator_edit_description_<%= indicator.id %>" value="<%= indicator.description %>"/>
+				<input type="hidden" id="indicator_show-edit_name_<%= indicator.id %>" value="<%= indicator.name %>"/>
+				<input type="hidden" id="indicator_show-edit_description_<%= indicator.id %>" value="<%= indicator.description %>"/>
 				<td><a href="/indicator/new/<%= indicator.id %>" class="btn btn-sm btn-primary">Show</a></td>
-				<td><button onclick="indicator_edit('<%= indicator.id %>')" class="btn btn-sm btn-warning">Edit</button></td>
+				<td><button onclick="EditIndicator('<%= indicator.id %>')" class="btn btn-sm btn-warning">Edit</button></td>
 				<td><form action="/indicator/destroy/<%= indicator.id %>" method="POST">
 					<input type="hidden" name="_method" value="delete"/>
 					<input type="submit" class="btn btn-sm btn-danger" value="delete"/>
@@ -34,9 +34,9 @@
 			</tr>
 		<% i += 1; }) %>
 	</table>
-	<form action="/indicator/update" id="indicator_edit_submit" method="POST">
+	<form action="/indicator/update" id="indicator_show-form" method="POST">
 		<!-- Modal -->
-		<div class="modal fade" id="indicator_edit_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="indicator_show-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -46,18 +46,18 @@
 						<h4 class="modal-title" id="myModalLabel">Edit Indicator</h4>
 					</div>
 					<div class="modal-body">
-						<div id="indicator_error_container"></div>
+						<div id="indicator_show-errdiv"></div>
 						<h5>Indicator name</h5>
-						<input type="text" id="indicator_name" class="form-control" placeholder="Enter indicator name..."/>
+						<input type="text" id="indicator_show-name" class="form-control" placeholder="Enter indicator name..."/>
 						<hr>
 						<h5>Description</h5>
-						<textarea class="form-control" id="indicator_description" rows="10" placeholder="Enter indicator description..."></textarea>
-						<input type="hidden" id="indicator_id" />
+						<textarea class="form-control" id="indicator_show-description" rows="10" placeholder="Enter indicator description..."></textarea>
+						<input type="hidden" id="indicator_show-id" />
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<input type="hidden" name="_csrf" id="_csrf" value="<%= _csrf %>" />
-						<input type="submit" id="indicator_save" class="btn btn-primary" value="Save Changes"></input>
+						<input type="submit" class="btn btn-primary" value="Save Changes"></input>
 					</div>
 				</div>
 			</div>

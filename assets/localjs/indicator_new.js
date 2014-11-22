@@ -79,6 +79,13 @@ var option = {
 var chart = new Highcharts.StockChart(option);
 
 // Section 3 - Interactive Response
+$("#indicator_new-load").click(function() {
+	var link = document.createElement("a");
+	var selected = $("#indicator_new-library").val();
+	var id = $('#indicators').find('option').filter(function() { return $.trim( $(this).val() ) === selected; }).attr('id');
+	link.setAttribute("href", id);
+	link.click();
+});
 
 // Plot indicator
 $("#indicator_new-plot").click(function() {
