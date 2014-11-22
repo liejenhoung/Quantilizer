@@ -58,12 +58,16 @@ module.exports.policies = {
   	  'new': "userCanSeeProfile",
 	  create: "userCanSeeProfile",
 	  show: "userCanSeeProfile",
-	  update: "userCanSeeProfile"
+	  update: "userCanSeeProfile",
+	  sync: "userCanSeeProfile",
+	  destroy: "userCanSeeProfile",
+	  '*': "admin"
   },
   
   strategy: {
   	  'new': "userCanSeeProfile",
-	  save: "userCanSeeProfile"
+	  save: "userCanSeeProfile",
+	  '*': "admin"
   }
 
   /***************************************************************************

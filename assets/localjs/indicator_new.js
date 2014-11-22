@@ -83,7 +83,7 @@ $("#indicator_new-load").click(function() {
 	var link = document.createElement("a");
 	var selected = $("#indicator_new-library").val();
 	var id = $('#indicators').find('option').filter(function() { return $.trim( $(this).val() ) === selected; }).attr('id');
-	link.setAttribute("href", id);
+	link.setAttribute("href", "/indicator/new/"+id);
 	link.click();
 });
 

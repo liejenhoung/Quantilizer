@@ -72,7 +72,7 @@ module.exports = {
 							if (err) return next(err);
 						});
 					});
-				res.redirect('/user/show/'+user.id);	
+					res.redirect('/user/show/'+user.id);	
 				});
 			});
 		});

@@ -11,27 +11,26 @@ module.exports = {
 	'new': function(req, res, next) {
 		Indicator.find({owner: req.session.User.name}, function(err, indicators) {
 			if (err) return next(err);
-			if (req.param('id') == undefined) {
-				res.view({
+			if (req.param('id')===undefined) {
+				return res.view({
 					indicator: {name: "", code: "", plotcode: "", description: ""},
 					indicators: indicators
 				});
-			} else {
-				Indicator.findOne(req.param('id'), function(err, indicator) {
-					if (err) return next(err);
-					if (!indicator) {
-						return res.view({
-							indicator: {name: "", code: "", plotcode: "", description: ""},
-							indicators: indicators
-						});
-					} else {
-						return res.view({
+			}
+			Indicator.findOne(req.param('id'), function(err, indicator) {
+				if (err) return next(err);
+				if (!indicator) {
+					return res.view({
+						indicator: {name: "", code: "", plotcode: "", description: ""},
+						indicators: indicators
+					});
+				} else {
+					return res.view({
 						indicator: indicator,
 						indicators: indicators
-						});
-					}
-				});	
-			}
+					});
+				}
+			});	
 		});
 	},
 	
@@ -41,7 +40,48 @@ module.exports = {
 			res.view({
 				indicators: indicators
 			});
-		})
+		});
+	},
+	
+	sync: function(req, res) {
+		Indicator.find({owner: "admin"}, function(err, indicators) {
+			_.each(indicators, function(indicator) {
+				Indicator.findOne({name_and_owner: indicator.name + "_" + req.session.User.name}, function(err2, found) {
+					if (err2) return next(err2);
+			
+					if (found) {
+						var indicatorObj = {
+							name: indicator.name,
+						    code: indicator.code,
+							plotcode: indicator.plotcode,
+						    description: indicator.description,
+							edited: indicator.edited
+						}
+						Indicator.update(found.id, indicatorObj, function(err3, create) {
+							if (err3) return next(err3);
+						});
+					} else {
+						var indicatorObj = {
+							name: indicator.name,
+						    code: indicator.code,
+							plotcode: indicator.plotcode,
+						    description: indicator.description,
+							author: indicator.author,
+							owner: req.session.User.name,
+							name_and_owner: indicator.name + "_" + req.session.User.name,
+							created: indicator.created,
+							edited: moment().format("YYYY-MM-DD"),
+							onsale: false,
+							price: 0
+						}
+						Indicator.create(indicatorObj, function(err3, create) {
+							if (err3) return next(err3);
+						});
+					}
+				});
+			});
+			return res.redirect('/indicator/show');
+		});	
 	},
 	
 	//process the info from edit view
