@@ -1,34 +1,154 @@
-// Define global variables
-var data = {};
-var imported_indicator = [];
+// Section 1 - Define Global Variables
 
-// Parse innerhtml and decode
-function parsehtml(id) {
-	return document.getElementById(id).innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-}
+var stock_data = [];
+var indicator_name = [];
+var indicator_data = [];
+var worker = new Worker('/localjs/strategy_worker.js');
 
-// Convert indicator array to string
-function indicatorstr() {
-	var str = "Console: Imported indicators";
-	$.each(imported_indicator, function(i, item){
-		str += " /" + (i+1) + ": " + imported_indicator[i].name;
-	});
-	return str;
-}
+worker.addEventListener('message', function(e) {
+	stock_data = e.data.stock_data;
+	indicator_data = e.data.indicator_data;
+	chart.series[0].setData(stock_data);
+	chart.series[1].setData(indicator_data);
+}, false);
+
+// Section 2 - Initialization
+
+// Generate Code Mirror
+var CodeMirror_Code = CodeMirror.fromTextArea($("#strategy_new-code").get(0), {
+	lineNumbers: true,
+	mode: "javascript"
+});
+CodeMirror_Code.setSize(500,240);
+
+var CodeMirror_Plotcode = CodeMirror.fromTextArea($("#strategy_new-plotcode").get(0), {
+	lineNumbers: true,
+	mode: "javascript"
+});
+CodeMirror_Plotcode.setSize(500,50);
+
+// Generate Stock Data
+stock_data = generate_hcstock($("#stock_tick").val(),$("#stock_mu").val()/100,$("#stock_sigma").val()/100);
+
+// Create High Chart (Simulated Stock)
+var option = {
+	chart: {
+		renderTo: 'container',
+		alignTicks: true
+	},
+
+	rangeSelector: {
+		selected: 1
+	},
+
+	title: {
+		text: 'Stock Price'
+	},
+
+	yAxis: [{
+		title: {
+			text: 'Price'
+		},
+		lineWidth: 2,
+	}, {
+		title: {
+			text: 'Indicator'
+		},
+		opposite: true,
+		lineWidth: 2,
+	}],
+        
+	navigator: {
+		enabled: true
+	},
+        
+	series: [{
+		type: 'candlestick',
+		name: 'Stock',
+		data: stock_data,
+		yAxis: 0
+
+	}, {
+		type: 'line',
+		name: 'Indicator',
+		data: indicator_data,
+		yAxis: 1
+
+	}]
+};
+
+var chart = new Highcharts.StockChart(option);
+
+// Section 3 - Interactive Response
+$("#strategy_new-load").click(function() {
+	var link = document.createElement("a");
+	var selected = $("#strategy_new-library").val();
+	var id = $('#indicators').find('option').filter(function() { return $.trim( $(this).val() ) === selected; }).attr('id');
+	link.setAttribute("href", "/strategy/new/"+id);
+	link.click();
+});
+
+// Plot indicator
+$("#strategy_new-plot").click(function() {
+	worker.postMessage({"cmd": "plot", "data": stock_data, "indicator": CodeMirror_Code.getValue(), "plot": CodeMirror_Plotcode.getValue()});
+});
+
+// Remove indicator
+$("#strategy_new-remove").click(function() {
+	worker.postMessage({"cmd": "remove", "data": stock_data});
+});
+
+// Download
+$("#strategy_new-download").click(function() {
+	var data = HighChart2Quandl(stock_data);
+	if(indicator_data.length>0) {
+		var header = "data:text/csv;charset=utf-8,Date,Open,High,Low,Close,Indicator\r\n";
+		for(t=0;t<data.length;t++) {
+			data[t]["Indicator"] = indicator_data[t][1];
+		}
+		var content = header+ConvertToCSV(data);
+	} else {
+		var header = "data:text/csv;charset=utf-8,Date,Open,High,Low,Close\r\n";
+		var content = header+ConvertToCSV(data);
+	}
+	var encodedUri = encodeURI(content);
+	var link = document.createElement("a");
+	link.setAttribute("href", encodedUri);
+	link.setAttribute("download", "indicator - "+moment().format("lll")+".csv");
+
+	link.click(); // This will download the data file named "my_data.csv".
+});
+
+// Select Simulate
+$('#strategy_new-simulate_price').click(function () {
+    $("#strategy_new-simulate_div").show();
+    $("#strategy_new-real_div").hide();
+});
+
+// Select Real
+$('#strategy_new-real_price').click(function () {
+    $("#strategy_new-real_div").show();
+    $("#strategy_new-simulate_div").hide();
+});
+
+// Refresh Stock
+$("#strategy_new-refresh").click(function() {
+	worker.postMessage({"cmd": "generate", "tick": $("#stock_tick").val(), "mu": $("#stock_mu").val()/100, "sigma": $("#stock_sigma").val()/100});
+});
+
+// Prevent Dropdown menu disappear
+$('#strategy_new-confg_dropdown').click(function(event){
+    event.stopPropagation();
+});
 
 // Import data from quandl
-$("#stocknum").change(function() {
+$("#strategy_new-import").click(function() {
+	var stockid = $("#strategy_new-stockid").val();
 	var auth_token = 'Xzhf33Joce67yvF5Mevc'
-	var url = 'https://www.quandl.com/api/v1/datasets/GOOG/' + $("#stocknum").val() + '.json?auth_token=' + auth_token;
+	var url = 'https://www.quandl.com/api/v1/datasets/GOOG/' + stockid + '.json?auth_token=' + auth_token;
 	$.getJSON(url, function(quandl){
-		// The entered code is correct
-		$("#dayfrom").val(quandl.data[quandl.data.length - 1][0]);
-		$("#dayfrom").attr({"max": quandl.data[0][0], "min": quandl.data[quandl.data.length - 1][0]});
-		$("#dayto").val(quandl.data[0][0]);
-		$("#dayto").attr({"max": quandl.data[0][0], "min": quandl.data[quandl.data.length - 1][0]});
-				
 		data = quandl.data.reverse();
-		
+	
 		// Convert the array to JSON object
 		for (t=0;t<data.length;t++){
 			// data[k][t] stands for the kth stock at time t
@@ -36,84 +156,43 @@ $("#stocknum").change(function() {
 				data[t][quandl.column_names[k]] = data[t][k];
 			}
 		}
-		
-		$("#console_stock").text("Console: Successfully imported stock " + quandl.code + " - " + quandl.name);
-						
+		worker.postMessage({"cmd": "import", "stockdata": data});		
 	}).fail(function(){
 		// The entered code is incorrect
-		$("#console_stock").text("Console: Fail to retrieve data.");
-	});
+	});	
 });
 
-// Temporarily not usable
-// $("#dayfrom").blur(function() {
-// 	$("#dayto").attr({"max": data[data.length - 1].Date, "min": $("dayfrom").val()});
-// });
-
-// Temporarily not usable
-// $("#dayto").blur(function() {
-// 	$("#dayfrom").attr({"max": $("dayto").val(), "min": data[0].Date});
-// });
-
-// Change strategy code display
-$("#strategy_select").change(function() {
-	if(this.value === "") { 
-		$("#strategy_display").val(""); 
+// Function to Read all imported indicators
+function read_indicator(str) {
+	var pattern = /import \"([a-zA-Z0-9 ]+)\";/;
+	var ans = pattern.exec(str);
+	if (ans==null) {
+		// return the remaining string
+		return str;
 	} else {
-		$("#strategy_display").val(parsehtml("strategy-info-description_" + this.value));
+		// add one more indicator name
+		indicator_name.push(ans[1]);
+		// recursive
+		return read_indicator(str.replace(ans[0],""));
 	}
-});
+}
 
-// Import strategies
-$("#strategy_import").click(function(){
-	var strategy_name = $("#strategy_select").val();
-	$("#code").val(parsehtml("strategy-info-code_" + strategy_name));
-	imported_indicator = JSON.parse(parsehtml("strategy-info-indicators_" + strategy_name));
-	
-	$("#console_indicator").text(indicatorstr);
-	$("#console_simple").text("Console: Imported Strategy: " + strategy_name);
-});
-
-// Change indicator code display
-$("#indicator_select").change(function() {
-	if(this.value === "") { 
-		$("#indicator_display").val(""); 
-	} else {
-		$("#indicator_display").val(parsehtml("indicator-info-code_" + this.value));
-	}
-});
-
-// Import indicators
-$("#import").click(function(){
-	var indicator_name = $("#indicator_select").val();
-	var imported = false;
-	
-	// Make sure indicator already exists
-	if (imported_indicator.length > 0) {
-		for(i=0;i<imported_indicator.length;i++) {
-			if (imported_indicator[i].name === indicator_name || indicator_name === "") {
-				// Already imported
-				imported = true;
-			}
-		}
-	}
-	if (!imported) {
-		imported_indicator[imported_indicator.length] = {};
-		imported_indicator[imported_indicator.length - 1]["name"] = $("#indicator_select").val();
-		imported_indicator[imported_indicator.length - 1]["code"] = $("#indicator_display").val();
-
-		$("#console_indicator").text(indicatorstr);
-	}
-});
-
-// Run Strategy
-$("#run").click(function(){
-	// Set result object
-	var result = [];
-
+// Perform Run
+$('#strategy_new-run').click(function(event){
+	// initialize indicator name
+	indicator_name = [];
+	// Get CodeMirror
+	var str = CodeMirror_Code.getValue();
+	// parse for all indicators and assign the remaining string after parsing
+	var strategy_code = read_indicator(str);
+	// Convert HighChart Data to QuandlData
+	var data = HighChart2Quandl(stock_data);
 	// Compile indicators
-	for (k=1;k<=imported_indicator.length;k++) {
-		eval(imported_indicator[k-1].code);
+	for(i=0;i<indicator_name.length;i++) {
+		var obj = document.getElementById(indicator_name[i]);
+		if (obj !== null) {
+			eval(obj.value);
+		} 
 	}
 
 	// Define all variables first
@@ -131,12 +210,14 @@ $("#run").click(function(){
 	
 	var cost = 0.00;
 	var total = 0.00
+	
+	var result = [];
 
 	for (t=0;t<data.length;t++) {
 		try {
 			
 			// Calculate the user code
-			eval($("#code").val());
+			eval(strategy_code);
 			
 			// Initializer the result object
 			result[t] = {};
@@ -173,55 +254,53 @@ $("#run").click(function(){
 			result[t]["total"] = total;
 			
 			if (t===data.length-1) {
-				$("#console_advance").text("Console: Final Capital is " + result[data.length-1].total);
-				$("#console_simple").text("Console: Final Capital is " + result[data.length-1].total);
+				$("#console_run").text("Console: Final Capital is " + result[data.length-1].total);
+				$('#strategy_new-run').hide();
+				$('#strategy_new-create').show();
 			}
-			
-			// Run finished, save imported indicators
-			$("#imported_indicator").val(JSON.stringify(imported_indicator));
-			$("#submit").show();
-			$("#report").show();
 			
 		} catch (e) {
 			// Return error
-			$("#console_advance").text("Console: Run time error # " + e.message);
-			$("#console_simple").text("Console: Run time error # " + e.message);
+			$("#console_run").text("Console: Run time error # " + e.message);
 			break;
 		}
 	}
 });
 
+// Click Save Indicator
+$('#strategy_new-create').click(function(event){
+	$('#strategy_new-Modal').modal('show');
+});
 
-// Save Strategy
-$('#strategy_form').submit(function(event){
-	// Stop form from submitting normally
+// Save strategy
+$('#strategy_new-form').submit(function(event){
 	event.preventDefault();
 	
-	// Define post json
-	var submitjson = {};
+ 	// Define post json
+ 	var submitjson = {
+ 		strategy_name: $("#strategy_new-name").val(),
+		strategy_code: CodeMirror_Code.getValue(),
+		strategy_plotcode: CodeMirror_Plotcode.getValue(),
+		strategy_description: $("#strategy_new-description").val(),
+		author: $("#strategy_new-author").val(),
+		_csrf: $("#_csrf").val()
+ 	};
 
-	submitjson["strategyname"] = prompt("Please enter the strategy name", "My strategy");
-	submitjson["description"] = prompt("Please enter the strategy description", "Description");
-	
-	// Get some values from elements on the page:
-	submitjson["arthor"] = $("#arthor").val();
-	submitjson["code"] = $("#code").val();
-	submitjson["indicators"] = $("#imported_indicator").val();
-	submitjson["_csrf"] = $("#_csrf").val();
-	url = $('#strategy_form').attr("action");
-	  
-	$.ajax({
-		url: url,
-		type: 'POST', 
-		contentType: 'application/json', 
-		dataType: 'html',
-		data: JSON.stringify(submitjson),
-		cache: false,
-		success: function(data){
-			alert('Successfully saved strategy.');
-		},
-		error: function(jqXHR, textStatus, err){
-			alert('text status '+textStatus+', err '+err);
-		} 
-	});
+ 	$.ajax({
+ 		url: $('#strategy_new-form').attr("action"),
+ 		type: 'POST', 
+ 		contentType: 'application/json', 
+ 		dataType: 'html',
+ 		data: JSON.stringify(submitjson),
+ 		cache: false,
+ 		success: function(data){
+			window.location.replace("/strategy/new");
+ 		},
+ 		error: function(jqXHR, textStatus, err){
+			if (!$("#strategy_new-errmsg").length) {
+				$("#strategy_new-errdiv").append('<ul class="alert alert-success" id="strategy_new-errmsg"><a href="#" class="close" data-dismiss="alert">&times;</a><li>'+jqXHR.responseText+'</li></ul>');
+			}				
+ 		} 
+ 	});
+	 
 });

@@ -18,9 +18,9 @@ var CodeMirror_Code = CodeMirror.fromTextArea($("#indicator_new-code").get(0), {
 	lineNumbers: true,
 	mode: "javascript"
 });
-CodeMirror_Code.setSize(500,200);
+CodeMirror_Code.setSize(500,240);
 
-var CodeMirror_Plotcode= CodeMirror.fromTextArea($("#indicator_new-plotcode").get(0), {
+var CodeMirror_Plotcode = CodeMirror.fromTextArea($("#indicator_new-plotcode").get(0), {
 	lineNumbers: true,
 	mode: "javascript"
 });
@@ -41,7 +41,7 @@ var option = {
 	},
 
 	title: {
-		text: 'Simulated Stock Price'
+		text: 'Stock Price'
 	},
 
 	yAxis: [{
@@ -97,11 +97,6 @@ $("#indicator_new-remove").click(function() {
 	worker.postMessage({"cmd": "remove", "data": stock_data});
 });
 
-// Refresh Stock
-$("#indicator_new-refresh").click(function() {
-	worker.postMessage({"cmd": "generate", "tick": $("#stock_tick").val(), "mu": $("#stock_mu").val()/100, "sigma": $("#stock_sigma").val()/100});
-});
-
 // Download
 $("#indicator_new-download").click(function() {
 	var data = HighChart2Quandl(stock_data);
@@ -123,9 +118,47 @@ $("#indicator_new-download").click(function() {
 	link.click(); // This will download the data file named "my_data.csv".
 });
 
+// Select Simulate
+$('#indicator_new-simulate_price').click(function () {
+    $("#indicator_new-simulate_div").show();
+    $("#indicator_new-real_div").hide();
+});
+
+// Select Real
+$('#indicator_new-real_price').click(function () {
+    $("#indicator_new-real_div").show();
+    $("#indicator_new-simulate_div").hide();
+});
+
+// Refresh Stock
+$("#indicator_new-refresh").click(function() {
+	worker.postMessage({"cmd": "generate", "tick": $("#stock_tick").val(), "mu": $("#stock_mu").val()/100, "sigma": $("#stock_sigma").val()/100});
+});
+
 // Prevent Dropdown menu disappear
 $('#indicator_new-confg_dropdown').click(function(event){
     event.stopPropagation();
+});
+
+// Import data from quandl
+$("#indicator_new-import").click(function() {
+	var stockid = $("#indicator_new-stockid").val();
+	var auth_token = 'Xzhf33Joce67yvF5Mevc'
+	var url = 'https://www.quandl.com/api/v1/datasets/GOOG/' + stockid + '.json?auth_token=' + auth_token;
+	$.getJSON(url, function(quandl){
+		data = quandl.data.reverse();
+	
+		// Convert the array to JSON object
+		for (t=0;t<data.length;t++){
+			// data[k][t] stands for the kth stock at time t
+			for(k=0;k<data[t].length;k++) {
+				data[t][quandl.column_names[k]] = data[t][k];
+			}
+		}
+		worker.postMessage({"cmd": "import", "stockdata": data});		
+	}).fail(function(){
+		// The entered code is incorrect
+	});	
 });
 
 // Click Save Indicator
