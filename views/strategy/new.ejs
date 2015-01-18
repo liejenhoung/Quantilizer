@@ -1,103 +1,98 @@
+<div class="loader"></div>
 <div class="container">
-	<form action="/strategy/save" method="POST" id="strategy_form">
+	<form action="/strategy/save" id="strategy_new-form" method="POST">
 		<h2>Strategy Formation</h2>
 		<hr>
+		<ol class="breadcrumb">
+			<li><span class="label label-default">Library</span></li>
+			<li><input list="indicators" id="strategy_new-library"></li>
+			<datalist id="indicators">
+				<% _.each(strategies, function(strategy) { %>
+				<option value="<%= strategy.name %>" id="<%= strategy.id %>">
+				<% }); %>
+			</datalist>
+			<input type="button" value="load" id="strategy_new-load" />
+		</ol>
 		<div class="row">
-			<div class="col-md-4">
-				<h5>Stock</h5>
-				<input type="text" id="stocknum" class="form-control" />
-			</div>
-			<div class="col-md-4">
-				<h5>Time From</h5>
-				<input type="date" id="dayfrom" class="form-control">
-			</div>
-			<div class="col-md-4">
-				<h5>Time To</h5>
-				<input type="date" id="dayto" class="form-control">
-			</div>
-		</div>
-		<br>
-		<pre id="console_stock">Console: Please enter your stock...</pre>
-		<hr>
-		<ul class="nav nav-tabs nav-justified" role="tablist">
-			<li role="presentation" class="active"><a href="#tab_simple" data-toggle="tab">Simple</a></li>
-			<li role="presentation"><a href="#tab_advance" data-toggle="tab">Advance</a></li>
-		</ul>
-		<div id="myTabContent" class="tab-content">
-			<div class="tab-pane fade in active" id="tab_simple">
-				<div class="row">
-					<div class="col-xs-12 col-md-8">
-						<h5>Strategy</h5>
-						<textarea id="strategy_display" class="form-control" rows=4 readonly></textarea>
-						<% _.each(strategies, function(strategy) { %>
-							<p id="strategy-info-description_<%= strategy.name %>" hidden><%= strategy.description %></p>
-							<p id="strategy-info-indicators_<%= strategy.name %>" hidden><%= strategy.indicators %></p>
-							<p id="strategy-info-code_<%= strategy.name %>" hidden><%= strategy.strategycode %></p>
-						<% }) %>
-					</div>
-					<div class="col-xs-6 col-md-4">
-						<h5>Library</h5>
-	
-						<select class="form-control" id="strategy_select">
-							<option></option>
-							<% _.each(strategies, function(strategy) { %>
-								<option><%= strategy.name %></option>
-							<% }) %>
-						</select>
-						<br>
-						<button type="button" id="strategy_import" class="btn btn-success btn-block">Import</button>
-					</div>
-				</div>
-				<hr>
-				<pre id="console_simple">Console: Please import the stock and strategy first...</pre>
-			</div>
-
-			<div class="tab-pane fade" id="tab_advance">
-				<div class="row">
-					<div class="col-xs-12 col-md-8">
-						<h5>Indicator</h5>
-						<textarea id="indicator_display" class="form-control" rows=4 readonly></textarea>
-						<% _.each(indicators, function(indicator) { %>
-							<p id="indicator-info-code_<%= indicator.name %>" hidden><%= indicator.code %></p>
-						<% }) %>
-					</div>
-					<div class="col-xs-6 col-md-4">
-						<h5>Library</h5>
-
-						<select class="form-control" id="indicator_select">
-							<option></option>
-							<% _.each(indicators, function(indicator) { %>
-								<option><%= indicator.name %></option>
-							<% }) %>
-						</select>
-						<br>
-						<button type="button" id="import" class="btn btn-success btn-block">Import</button>
-					</div>
-				</div>
+			<div class="col-md-6">
+				<h5>Strategy Code	</h5>
+				<textarea id="strategy_new-code" class="form-control" rows=5><%= strategy.code %></textarea>
 				<br>
-				<pre id="console_indicator">Console: Please import indicators...</pre>
-				<hr>
-				<h5>Strategy</h5>
-				<input type="hidden" id="imported_indicator" name="imported_indicator"/>
-				<textarea id="code" name="code" class="form-control" rows=6>
-				</textarea>
-				<hr>
-				<pre id="console_advance">Console: Please import the stock and indicator first...</pre>
+				<h5>Plot Code</h5>
+				<textarea name="plot_code" id="strategy_new-plotcode" class="form-control" rows=5><%= strategy.plotcode %></textarea>
+				<br>
+				<input type="button" id="strategy_new-plot", value="Plot">
+				<input type="button" id="strategy_new-remove", value="Remove">
+				<input type="button" id="strategy_new-download" Value="Download">
+			</div>
+			<div class="col-md-6">
+				<div id="container" style="height: 400px; min-width: 310px"></div>
+				<div class="col-md-5">
+					<input type="radio" id="strategy_new-simulate_price" name="type" value="Simulate" checked /> Simulate 
+				    <input type="radio" id="strategy_new-real_price" name="type" value="Real" /> Real
+				</div>
+				<div class="col-md-7" id="strategy_new-simulate_div">
+					<div class="btn-group" role="group">
+						Simulation
+						<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							Configuration
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" id="strategy_new-confg_dropdown" role="menu">
+							<li><input type="text" id="stock_tick" Value=400 size=5> Tick</li>
+							<li><input type="text" id="stock_mu" Value=2 size=5> mu</li>
+							<li><input type="text" id="stock_sigma" Value=10 size=5> sigma</li>
+						</ul>
+					</div>
+				    <input type="button" id="strategy_new-refresh" Value="Refresh" />
+				</div>
+				<div class="col-md-7" id="strategy_new-real_div" style="display:none">
+				    Stock 
+				    <input type="text" id="strategy_new-stockid" />
+				    <input type="button" id="strategy_new-import" Value="Import" />
+				</div>
 			</div>
 		</div>
-		<input type="button" id="run" class="btn btn-lg btn-primary btn-block" value="Test" />
 		<hr>
-		<div class="row">
-			<div class="col-md-6">
-				<input type="button" id="report" style="display:none" class="btn btn-lg btn-default btn-block" value="Report" />
-			</div>
-			<div class="col-md-6">
-				<input type="submit" id="submit" style="display:none" class="btn btn-lg btn-default btn-block" value="Save" />
+		<pre id="console_run">Console: Please import the stock and indicator first...</pre>
+		<hr>
+		<button type="button" id="strategy_new-run" class="btn btn-primary btn-lg btn-block">Run</button>
+		<button type="button" id="strategy_new-create" class="btn btn-primary btn-lg btn-block" style="display:none">Save</button>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="strategy_new-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myModalLabel">Create Strategy</h4>
+					</div>
+					<div class="modal-body">
+						<div id="strategy_new-errdiv"></div>
+						<h5>Strategy name</h5>
+						<input type="text" id="strategy_new-name" class="form-control" value="<%= strategy.name%>" placeholder="Enter strategy name..."/>
+						<hr>
+						<h5>Description</h5>
+						<textarea class="form-control" id="strategy_new-description" rows="10" placeholder="Enter strategy description..."><%= strategy.description%></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<input type="submit" class="btn btn-primary" value="Save Changes"></input>
+					</div>
+				</div>
 			</div>
 		</div>
-		<input type="hidden" name="_csrf" id="_csrf" value="<%= _csrf %>" />
-		<input type="hidden" name="arthor" id="arthor" value="<%= session.User.name %>" />
+		<!-- Modal END -->
+		
+		<input type="hidden" id="_csrf" name="_csrf" value="<%= _csrf %>" />
+		<input type="hidden" id="strategy_new-author" name="author" value="<%= session.User.name %>" />
 	</form>
 </div>
+
+<% _.each(indicators, function(indicator) { %>
+<input type="hidden" value="<%= indicator.code %>" id="<%= indicator.name %>" />
+<% }); %>
 
 <%- block('localScripts', '<script src="/localjs/strategy_new.js"></script>') %>

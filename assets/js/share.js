@@ -63,6 +63,22 @@ function HighChart2Quandl (highchart) {
 	return result;
 }
 
+function Quandl2HighChart (quandl) {
+	var result = [];
+	for(t=0;t<quandl.length;t++){
+		curr_date = quandl[t].Date;
+		utc_date = Date.UTC(moment(curr_date).format("YYYY"),moment(curr_date).format("MM"),moment(curr_date).format("DD"));
+		
+		stock_open = quandl[t].Open;
+		stock_high = quandl[t].High;
+		stock_low = quandl[t].Low;
+		stock_close = quandl[t].Close;
+		
+		result.push([utc_date, stock_open, stock_high, stock_low, stock_close]);
+	}
+	return result;
+}
+
 function generate_hcstock(input_tick, input_mu, input_sigma) {
 	// Define variables
 	var utc_Date = 0;

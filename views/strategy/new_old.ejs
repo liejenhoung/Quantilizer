@@ -1,0 +1,103 @@
+<div class="container">
+	<form action="/strategy/save" method="POST" id="strategy_form">
+		<h2>Strategy Formation</h2>
+		<hr>
+		<div class="row">
+			<div class="col-md-4">
+				<h5>Stock</h5>
+				<input type="text" id="stocknum" class="form-control" />
+			</div>
+			<div class="col-md-4">
+				<h5>Time From</h5>
+				<input type="date" id="dayfrom" class="form-control">
+			</div>
+			<div class="col-md-4">
+				<h5>Time To</h5>
+				<input type="date" id="dayto" class="form-control">
+			</div>
+		</div>
+		<br>
+		<pre id="console_stock">Console: Please enter your stock...</pre>
+		<hr>
+		<ul class="nav nav-tabs nav-justified" role="tablist">
+			<li role="presentation" class="active"><a href="#tab_simple" data-toggle="tab">Simple</a></li>
+			<li role="presentation"><a href="#tab_advance" data-toggle="tab">Advance</a></li>
+		</ul>
+		<div id="myTabContent" class="tab-content">
+			<div class="tab-pane fade in active" id="tab_simple">
+				<div class="row">
+					<div class="col-xs-12 col-md-8">
+						<h5>Strategy</h5>
+						<textarea id="strategy_display" class="form-control" rows=4 readonly></textarea>
+						<% _.each(strategies, function(strategy) { %>
+							<p id="strategy-info-description_<%= strategy.name %>" hidden><%= strategy.description %></p>
+							<p id="strategy-info-indicators_<%= strategy.name %>" hidden><%= strategy.indicators %></p>
+							<p id="strategy-info-code_<%= strategy.name %>" hidden><%= strategy.strategycode %></p>
+						<% }) %>
+					</div>
+					<div class="col-xs-6 col-md-4">
+						<h5>Library</h5>
+	
+						<select class="form-control" id="strategy_select">
+							<option></option>
+							<% _.each(strategies, function(strategy) { %>
+								<option><%= strategy.name %></option>
+							<% }) %>
+						</select>
+						<br>
+						<button type="button" id="strategy_import" class="btn btn-success btn-block">Import</button>
+					</div>
+				</div>
+				<hr>
+				<pre id="console_simple">Console: Please import the stock and strategy first...</pre>
+			</div>
+
+			<div class="tab-pane fade" id="tab_advance">
+				<div class="row">
+					<div class="col-xs-12 col-md-8">
+						<h5>Indicator</h5>
+						<textarea id="indicator_display" class="form-control" rows=4 readonly></textarea>
+						<% _.each(indicators, function(indicator) { %>
+							<p id="indicator-info-code_<%= indicator.name %>" hidden><%= indicator.code %></p>
+						<% }) %>
+					</div>
+					<div class="col-xs-6 col-md-4">
+						<h5>Library</h5>
+
+						<select class="form-control" id="indicator_select">
+							<option></option>
+							<% _.each(indicators, function(indicator) { %>
+								<option><%= indicator.name %></option>
+							<% }) %>
+						</select>
+						<br>
+						<button type="button" id="import" class="btn btn-success btn-block">Import</button>
+					</div>
+				</div>
+				<br>
+				<pre id="console_indicator">Console: Please import indicators...</pre>
+				<hr>
+				<h5>Strategy</h5>
+				<input type="hidden" id="imported_indicator" name="imported_indicator"/>
+				<textarea id="code" name="code" class="form-control" rows=6>
+				</textarea>
+				<hr>
+				<pre id="console_advance">Console: Please import the stock and indicator first...</pre>
+			</div>
+		</div>
+		<input type="button" id="run" class="btn btn-lg btn-primary btn-block" value="Test" />
+		<hr>
+		<div class="row">
+			<div class="col-md-6">
+				<input type="button" id="report" style="display:none" class="btn btn-lg btn-default btn-block" value="Report" />
+			</div>
+			<div class="col-md-6">
+				<input type="submit" id="submit" style="display:none" class="btn btn-lg btn-default btn-block" value="Save" />
+			</div>
+		</div>
+		<input type="hidden" name="_csrf" id="_csrf" value="<%= _csrf %>" />
+		<input type="hidden" name="arthor" id="arthor" value="<%= session.User.name %>" />
+	</form>
+</div>
+
+<%- block('localScripts', '<script src="/localjs/strategy_new.js"></script>') %>
