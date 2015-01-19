@@ -156,9 +156,13 @@ $("#strategy_new-import").click(function() {
 				data[t][quandl.column_names[k]] = data[t][k];
 			}
 		}
+		
+		$("#console").text("Console: Successfully imported stock " + quandl.code + " - " + quandl.name);
 		worker.postMessage({"cmd": "import", "stockdata": data});		
+		
 	}).fail(function(){
 		// The entered code is incorrect
+		$("#console").text("Console: Fail to retrieve data.");
 	});	
 });
 
@@ -254,14 +258,14 @@ $('#strategy_new-run').click(function(event){
 			result[t]["total"] = total;
 			
 			if (t===data.length-1) {
-				$("#console_run").text("Console: Final Capital is " + result[data.length-1].total);
+				$("#console").text("Console: Final Capital is " + result[data.length-1].total);
 				$('#strategy_new-run').hide();
 				$('#strategy_new-create').show();
 			}
 			
 		} catch (e) {
 			// Return error
-			$("#console_run").text("Console: Run time error # " + e.message);
+			$("#console").text("Console: Run time error # " + e.message);
 			break;
 		}
 	}
@@ -294,7 +298,7 @@ $('#strategy_new-form').submit(function(event){
  		data: JSON.stringify(submitjson),
  		cache: false,
  		success: function(data){
-			window.location.replace("/strategy/new");
+			window.location.replace("/strategy/show");
  		},
  		error: function(jqXHR, textStatus, err){
 			if (!$("#strategy_new-errmsg").length) {

@@ -1,0 +1,68 @@
+<div class='container'>	
+	<h2>Indicators</h2>
+	<h6 align=right style="padding-right: 2.8%"><a href="/strategy/sync"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Sync</a></h6>
+	<table class='table'>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Author</th>
+			<th>Created</th>
+			<th>Edited</th>
+			<th>Description</th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+		<% var i = 1; %>
+		<% _.each(strategies, function(strategy) { %>
+			<tr data-id="<%= strategy.id %>" data-model="strategy">
+				<td><%= i %></td>
+				<td><%= strategy.name%></td>
+				<td><%= strategy.author %></td>
+				<td><%= strategy.created %></td>
+				<td><%= strategy.edited %></td>
+				<td><%= strategy.description.slice(0,50) + "..." %></td>
+				<input type="hidden" id="strategy_show-edit_name_<%= strategy.id %>" value="<%= strategy.name %>"/>
+				<input type="hidden" id="strategy_show-edit_description_<%= strategy.id %>" value="<%= strategy.description %>"/>
+				<td><a href="/strategy/new/<%= strategy.id %>" class="btn btn-sm btn-primary">Show</a></td>
+				<td><button onclick="EditStrategy('<%= strategy.id %>')" class="btn btn-sm btn-warning">Edit</button></td>
+				<td><form action="/strategy/destroy/<%= strategy.id %>" method="POST">
+					<input type="hidden" name="_method" value="delete"/>
+					<input type="submit" class="btn btn-sm btn-danger" value="delete"/>
+					<input type="hidden" name="_csrf" value="<%= _csrf %>" />
+				</form></td>
+			</tr>
+		<% i += 1; }) %>
+	</table>
+	<form action="/strategy/update" id="strategy_show-form" method="POST">
+		<!-- Modal -->
+		<div class="modal fade" id="strategy_show-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myModalLabel">Edit Strategy</h4>
+					</div>
+					<div class="modal-body">
+						<div id="strategy_show-errdiv"></div>
+						<h5>Strategy name</h5>
+						<input type="text" id="strategy_show-name" class="form-control" placeholder="Enter strategy name..."/>
+						<hr>
+						<h5>Description</h5>
+						<textarea class="form-control" id="strategy_show-description" rows="10" placeholder="Enter strategy description..."></textarea>
+						<input type="hidden" id="strategy_show-id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<input type="hidden" name="_csrf" id="_csrf" value="<%= _csrf %>" />
+						<input type="submit" class="btn btn-primary" value="Save Changes"></input>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<%- block('localScripts', '<script src="/localjs/strategy_show.js"></script>') %>
