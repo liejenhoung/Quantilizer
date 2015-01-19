@@ -72,28 +72,7 @@ module.exports = {
 							if (err) return next(err);
 						});
 					});
-					// Created strategies
-					Strategy.find({owner: "admin"}, function(err, strategies) {
-						_.each(strategies, function(strategy) {
-							var strategyObj = {
-								name: strategy.name,
-							    code: strategy.code,
-								plotcode: strategy.plotcode,
-							    description: strategy.description,
-								author: strategy.author,
-								owner: req.session.User.name,
-								name_and_owner: strategy.name + "_" + req.session.User.name,
-								created: strategy.created,
-								edited: moment().format("YYYY-MM-DD"),
-								onsale: false,
-								price: 0
-							}
-							Strategy.create(strategyObj, function(err, strategy) {
-								if (err) return next(err);
-							});
-						});
-						res.redirect('/user/show/'+user.id);	
-					});
+					res.redirect('/user/show/'+user.id);	
 				});
 			});
 		});
