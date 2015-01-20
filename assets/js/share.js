@@ -67,7 +67,7 @@ function Quandl2HighChart (quandl) {
 	var result = [];
 	for(t=0;t<quandl.length;t++){
 		curr_date = quandl[t].Date;
-		utc_date = Date.UTC(moment(curr_date).format("YYYY"),moment(curr_date).format("MM"),moment(curr_date).format("DD"));
+		utc_date = moment.utc(curr_date).valueOf();
 		
 		stock_open = quandl[t].Open;
 		stock_high = quandl[t].High;

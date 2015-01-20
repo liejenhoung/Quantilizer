@@ -144,7 +144,7 @@ $('#indicator_new-confg_dropdown').click(function(event){
 $("#indicator_new-import").click(function() {
 	var stockid = $("#indicator_new-stockid").val();
 	var auth_token = 'Xzhf33Joce67yvF5Mevc'
-	var url = 'https://www.quandl.com/api/v1/datasets/GOOG/' + stockid + '.json?auth_token=' + auth_token;
+	var url = 'https://www.quandl.com/api/v1/datasets/' + stockid + '.json?auth_token=' + auth_token;
 	$.getJSON(url, function(quandl){
 		data = quandl.data.reverse();
 	
