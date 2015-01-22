@@ -102,7 +102,7 @@ module.exports = {
 		});
 	},
 	
-	create: function(req, res, next) {
+	save: function(req, res, next) {
 		
 		Indicator.findOne({name_and_owner: req.param('indicator_name') + "_" + req.param('author')}, function(err, found) {
 			if (err) return next(err);

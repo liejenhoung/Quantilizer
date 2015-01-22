@@ -56,7 +56,7 @@ module.exports.policies = {
   
   indicator: {
   	  'new': "userCanSeeProfile",
-	  create: "userCanSeeProfile",
+	  save: "userCanSeeProfile",
 	  show: "userCanSeeProfile",
 	  update: "userCanSeeProfile",
 	  sync: "userCanSeeProfile",
@@ -66,7 +66,7 @@ module.exports.policies = {
   
   strategy: {
   	  'new': "userCanSeeProfile",
-	  create: "userCanSeeProfile",
+	  save: "userCanSeeProfile",
 	  show: "userCanSeeProfile",
 	  update: "userCanSeeProfile",
 	  sync: "userCanSeeProfile",

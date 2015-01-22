@@ -118,7 +118,7 @@ module.exports = {
 		});
 	},
 	
-	create: function(req, res, next) {
+	save: function(req, res, next) {
 		
 		Strategy.findOne({name_and_owner: req.param('strategy_name') + "_" + req.param('author')}, function(err, found) {
 			if (err) return next(err);
