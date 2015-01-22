@@ -53,7 +53,7 @@ var option = {
 		lineWidth: 2,
 	}, {
 		title: {
-			text: 'Indicator'
+			text: 'Output'
 		},
 		opposite: true,
 		lineWidth: 2,
@@ -71,7 +71,7 @@ var option = {
 
 	}, {
 		type: 'line',
-		name: 'Indicator',
+		name: 'Output',
 		data: output_data,
 		yAxis: 1
 
