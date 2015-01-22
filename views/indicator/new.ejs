@@ -1,6 +1,6 @@
 <div class="loader"></div>
 <div class="container">
-	<form action="/indicator/create" id="indicator_new-form" method="POST">
+	<form action="/indicator/save" id="indicator_new-form" method="POST">
 		<h2>Indicator Formation</h2>
 		<hr>
 		<ol class="breadcrumb">
@@ -18,10 +18,10 @@
 				<h5>Indicator Code	</h5>
 				<textarea id="indicator_new-code" class="form-control" rows=5><%= indicator.code %></textarea>
 				<br>
-				<h5>Plot Code</h5>
+				<h5>Execution Code</h5>
 				<textarea name="plot_code" id="indicator_new-plotcode" class="form-control" rows=5><%= indicator.plotcode %></textarea>
 				<br>
-				<input type="button" id="indicator_new-plot", value="Plot">
+				<input type="button" id="indicator_new-run", value="Run">
 				<input type="button" id="indicator_new-remove", value="Remove">
 				<input type="button" id="indicator_new-download" Value="Download">
 			</div>
@@ -54,7 +54,9 @@
 			</div>
 		</div>
 		<hr>
-		<button type="button" id="indicator_new-create" class="btn btn-primary btn-lg btn-block">Create</button>
+		<pre id="console">Console: Write you indicator code and then click run...</pre>
+		<hr>
+		<button type="button" id="indicator_new-save" class="btn btn-primary btn-lg btn-block">Save</button>
 				
 		<!-- Modal -->
 		<div class="modal fade" id="indicator_new-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -64,7 +66,7 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" id="myModalLabel">Create Indicator</h4>
+						<h4 class="modal-title" id="myModalLabel">Save Indicator</h4>
 					</div>
 					<div class="modal-body">
 						<div id="indicator_new-errdiv"></div>

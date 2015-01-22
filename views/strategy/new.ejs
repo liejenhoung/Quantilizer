@@ -1,6 +1,6 @@
 <div class="loader"></div>
 <div class="container">
-	<form action="/strategy/create" id="strategy_new-form" method="POST">
+	<form action="/strategy/save" id="strategy_new-form" method="POST">
 		<h2>Strategy Formation</h2>
 		<hr>
 		<ol class="breadcrumb">
@@ -18,10 +18,10 @@
 				<h5>Strategy Code	</h5>
 				<textarea id="strategy_new-code" class="form-control" rows=5><%= strategy.code %></textarea>
 				<br>
-				<h5>Plot Code</h5>
+				<h5>Execution Code</h5>
 				<textarea name="plot_code" id="strategy_new-plotcode" class="form-control" rows=5><%= strategy.plotcode %></textarea>
 				<br>
-				<input type="button" id="strategy_new-plot", value="Plot">
+				<input type="button" id="strategy_new-run", value="Run">
 				<input type="button" id="strategy_new-remove", value="Remove">
 				<input type="button" id="strategy_new-download" Value="Download">
 			</div>
@@ -56,8 +56,7 @@
 		<hr>
 		<pre id="console">Console: Write you strategy code and then click run...</pre>
 		<hr>
-		<button type="button" id="strategy_new-run" class="btn btn-primary btn-lg btn-block">Run</button>
-		<button type="button" id="strategy_new-create" class="btn btn-primary btn-lg btn-block" style="display:none">Save</button>
+		<button type="button" id="strategy_new-save" class="btn btn-primary btn-lg btn-block">Save</button>
 		
 		<!-- Modal -->
 		<div class="modal fade" id="strategy_new-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -67,7 +66,7 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" id="myModalLabel">Create Strategy</h4>
+						<h4 class="modal-title" id="myModalLabel">Save Strategy</h4>
 					</div>
 					<div class="modal-body">
 						<div id="strategy_new-errdiv"></div>
