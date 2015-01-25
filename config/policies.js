@@ -28,12 +28,11 @@ module.exports.policies = {
 
   '*': 'flash',
   
-  SocketController: {
-    'id': 'isSocket',
-    'join': 'isSocket',
-    'leave': 'isSocket',
-    'broadcast': 'isSocket',
-    'socketRooms': 'isSocket'
+  intro: {
+	  index: "flash",
+	  terms: "flash",
+	  about: "flash",
+	  contact: "flash"
   },
   
   user: {
@@ -71,6 +70,7 @@ module.exports.policies = {
 	  update: "userCanSeeProfile",
 	  sync: "userCanSeeProfile",
 	  destroy: "userCanSeeProfile",
+	  report: "userCanSeeProfile",
 	  '*': "admin"
   }
 

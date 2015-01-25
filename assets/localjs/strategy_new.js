@@ -148,7 +148,7 @@ $("#strategy_new-remove").click(function() {
 $("#strategy_new-download").click(function() {
 	var data = HighChart2Quandl(stock_data);
 	if(output_data.length>0) {
-		var header = "data:text/csv;charset=utf-8,Date,Open,High,Low,Close,Indicator\r\n";
+		var header = "data:text/csv;charset=utf-8,Date,Open,High,Low,Close,Output\r\n";
 		for(t=0;t<data.length;t++) {
 			data[t]["Output"] = output_data[t][1];
 		}
@@ -160,7 +160,7 @@ $("#strategy_new-download").click(function() {
 	var encodedUri = encodeURI(content);
 	var link = document.createElement("a");
 	link.setAttribute("href", encodedUri);
-	link.setAttribute("download", "indicator - "+moment().format("lll")+".csv");
+	link.setAttribute("download", "strategy - "+moment().format("lll")+".csv");
 
 	link.click(); // This will download the data file named "my_data.csv".
 });
