@@ -55,6 +55,9 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
+					<li class="dropdown">
+						<a href="/intro/index" >Get Started</a>
+					</li>
 					<% if (session.authenticated) { %>
 			        <li class="dropdown">
 			        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">User</a>
@@ -82,6 +85,14 @@
 			          	</ul>
 					</li>
 					<% } %>
+					<li class="dropdown">
+			        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation</a>
+			        	<ul class="dropdown-menu" role="menu">
+			            	<li><a href="/doc/show">v1.0</a></li>
+			            	<li class="divider"></li>
+							<li><a href="/strategy/show">Support</a><li>
+			          	</ul>
+					</li>
 				</ul>
 				<div class="navbar-right">
 					<% if (session.authenticated) { %>
@@ -110,11 +121,13 @@
 	<!--Footer-->
 	<div class="container">
 		<hr>
-		<footer class="footer pull-right">
-			<div>
-				<a href="http://sailsjs.com/">Quantilizer</a>
-				<div>found on Nov 2014, Hong Kong</div>
-			</div>
+		<footer align="right">
+		<ol class="breadcrumb" style="background-color: #FFFFFF;">
+			<li><a href="/intro/terms">Terms</a></li>
+			<li><a href="/intro/about">About</a></li>
+			<li><a href="/intro/contact">Contact</a></li>
+			<li class="active">© 2015 Quantilizer</li>
+		</ol>
 		</footer>
 	</div>
 	<!--End Footer-->

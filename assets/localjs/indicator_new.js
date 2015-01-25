@@ -117,7 +117,7 @@ $("#indicator_new-remove").click(function() {
 $("#indicator_new-download").click(function() {
 	var data = HighChart2Quandl(stock_data);
 	if(output_data.length>0) {
-		var header = "data:text/csv;charset=utf-8,Date,Open,High,Low,Close,Indicator\r\n";
+		var header = "data:text/csv;charset=utf-8,Date,Open,High,Low,Close,Output\r\n";
 		for(t=0;t<data.length;t++) {
 			data[t]["Output"] = output_data[t][1];
 		}
